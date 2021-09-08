@@ -1,0 +1,48 @@
+scalar Timestamp
+
+
+interface Animal {
+    name: String
+}
+
+type Bird implements Animal {
+    name: String!
+    "翅膀展開長度"
+    wingSpanLength: Int!
+}
+
+type Monkey implements Animal {
+    name: String!
+    "手臂展開長度"
+    armSpanLength: Int!
+}
+directive @upper on FIELD_DEFINITION
+
+type User {
+    firstName: String @deprecated (reason: "No longer supported")
+    lastName: String @upper
+    #    fullName: String @computed(value: "$firstName $lastName")
+}
+
+directive @date(format: String) on FIELD_DEFINITION
+#directive @date(
+#    defaultFormat: String = "mmmm d, yyyy"
+#) on FIELD_DEFINITION
+scalar Date
+
+type Post {
+    published: Date @date(format: "mmmm d, yyyy")
+}
+
+type Query {
+    user: User
+    animal(name: String!): Animal
+    animals: [Animal]
+
+    # 獲取現在時間
+    now: Timestamp
+    # 詢問日期是否為週五... TGIF!!
+    isFriday(date: Timestamp!): Boolean
+
+    today: Date @date
+}
